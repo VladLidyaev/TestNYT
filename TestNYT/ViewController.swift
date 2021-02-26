@@ -8,12 +8,23 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    let postProvider = dataProvider()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        postProvider.getList { (results) in
+            switch results {
+            case .success(let data):
+                print(data.count)
+            case .failure(_):
+                print("provider error")
+            }
+        }
     }
-
+    
+    
 
 }
 
