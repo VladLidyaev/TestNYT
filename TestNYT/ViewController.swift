@@ -59,9 +59,13 @@ class ViewController: UIViewController {
                 switch results {
                 case .success(let data):
                     mainData.accept(data)
+                    DispatchQueue.main.async {
+                        self.navigationItem.title = "Top stories: " + String(mainData.value.count)
+                    }
                     semaphore.signal()
                 case .failure(_):
-                    print("provider error")
+                    mainData.accept([Post]())
+                    ShowAlert()
                     semaphore.signal()
                 }
             }
@@ -74,6 +78,19 @@ class ViewController: UIViewController {
         let title = "Top stories"
         navigationItem.title = title
         navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    private func ShowAlert(){
+        let HoustonMess = "Houston, we have a problem..."
+        DispatchQueue.main.async {
+            if Reachability.isConnectedToNetwork() {
+                let alert = UIAlertController(title: HoustonMess, message: "We have a small problem on the server. We'll fix it soon", preferredStyle: .alert)
+                self.present(alert, animated: true)
+            } else {
+                let alert = UIAlertController(title: HoustonMess, message: "You have problems connecting to the Internet, check your connection and restart the app.", preferredStyle: .alert)
+                self.present(alert, animated: true)
+            }
+        }
     }
     
 }
